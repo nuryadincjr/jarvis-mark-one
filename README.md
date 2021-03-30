@@ -12,6 +12,6 @@ jarvis with python programmms
 - Katakan "Your name" untuk menayakan nama nya
 - katakan "Joke" maka dia akan mengatakan joks secara acak
 - Katakan "Write" untuk menulis outomatis dengan mengarahkan kursor pada windows yang aktif
-- Katakan "Kirim pesan" untuk mengirim pesan, dan ikuti perintahnya
+- Katakan "Kirim email" untuk mengirim email, dan ikuti perintahnya
 - Katakan "Terjemah" diikuti dengan bahasa Indonesia yang akan di terjemahkan ke bahasa inggris
 - Katkan "Siapa saya" maka dia akan menjawab
