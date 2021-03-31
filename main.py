@@ -17,8 +17,8 @@ listener = sr.Recognizer()
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
-input_lang = 'id-ID'
-output_lang = 'en'
+default_input_lang = 'id'
+default_output_lang = 'en'
 
 
 def talk(text):
@@ -31,7 +31,7 @@ def take_command():
         with sr.Microphone() as source:
             print('listening...')
             voice = listener.listen(source)
-            command = listener.recognize_google(voice, language=input_lang)
+            command = listener.recognize_google(voice, language=default_input_lang)
             command = command.lower()
             if 'jarvis' in command:
                 command = command.replace('jarvis', '')
@@ -78,8 +78,7 @@ def run_engine():
     elif 'book' in command:
         pdf_reader()
     elif 'translate' in command:
-        person = command.replace('translate', '')
-        translate(person)
+        translate()
     else:
         talk('Please say the command again')
 
@@ -133,9 +132,37 @@ def email_info():
     message = take_command()
     email_send(reciver, subject, message)
 
+all_lang = {
+        'afrikaans': 'af', 'albanian': 'sq', 'amharic': 'am', 'arabic': 'ar', 'armenian': 'hy', 'azerbaijani': 'az',
+         'basque': 'eu', 'belarusian':'be', 'bengali': 'bn', 'bosnian': 'bs', 'bulgarian': 'bg', 'catalan': 'ca',
+         'cebuano': 'ceb', 'chichewa': 'ny', 'chinese (simplified)': 'zh-cn', 'chinese (traditional)': 'zh-tw',
+         'corsican': 'co', 'croatian': 'hr', 'czech': 'cs', 'danish': 'da', 'dutch': 'nl', 'english': 'en',
+         'esperanto': 'eo', 'estonian': 'et', 'filipino': 'tl', 'finnish': 'fi', 'french': 'fr', 'frisian': 'fy',
+         'galician': 'gl', 'georgian': 'ka', 'german': 'de', 'greek': 'el', 'gujarati': 'gu', 'haitian creole': 'ht',
+         'hausa': 'ha', 'hawaiian': 'haw', 'hebrew': 'iw', 'hebrew': 'he', 'hindi': 'hi', 'hmong': 'hmn',
+         'hungarian': 'hu', 'icelandic': 'is', 'igbo': 'ig', 'indonesian': 'id', 'irish': 'ga', 'italian': 'it',
+         'japanese': 'ja', 'javanese': 'jw', 'kannada': 'kn', 'kazakh': 'kk', 'khmer': 'km', 'korean': 'ko',
+         'kurdish (kurmanji)': 'ku', 'kyrgyz': 'ky', 'lao': 'lo', 'latin': 'la', 'latvian': 'lv', 'lithuanian': 'lt',
+         'luxembourgish': 'lb', 'macedonian': 'mk', 'malagasy': 'mg', 'malay': 'ms', 'malayalam': 'ml', 'maltese': 'mt',
+         'maori': 'mi', 'marathi': 'mr', 'mongolian': 'mn', 'myanmar (burmese)': 'my', 'nepali': 'ne',
+         'norwegian': 'no', 'odia': 'or', 'pashto': 'ps', 'persian': 'fa', 'polish': 'pl', 'portuguese': 'pt',
+         'punjabi': 'pa', 'romanian': 'ro', 'russian': 'ru', 'samoan': 'sm', 'scots gaelic': 'gd', 'serbian': 'sr',
+         'sesotho': 'st', 'shona': 'sn', 'sindhi': 'sd', 'sinhala': 'si', 'slovak': 'sk', 'slovenian': 'sl',
+         'somali': 'so', 'spanish': 'es', 'sundanese': 'su', 'swahili': 'sw', 'swedish': 'sv', 'tajik': 'tg',
+         'tamil': 'ta', 'telugu': 'te', 'thai': 'th', 'turkish': 'tr', 'ukrainian': 'uk', 'urdu': 'ur', 'uyghur': 'ug',
+         'uzbek': 'uz', 'vietnamese': 'vi', 'welsh': 'cy', 'xhosa': 'xh', 'yiddish': 'yi', 'yoruba': 'yo', 'zulu': 'zu'
+    }
 
-def translate(person):
-    # print(googletrans.LANGUAGES)
+def translate():
+    lang_list = googletrans.LANGUAGES
+    talk('into what language do I translate?')
+    # print(lang_list['en'])
+    commend = take_command()
+    output_lang = all_lang[commend]
+    input_lang = default_input_lang
+    print(lang_list[input_lang] +" to " +lang_list[output_lang])
+    talk('what can i translate?')
+    person = take_command()
     translator = googletrans.Translator()
     translated = translator.translate(person, dest=output_lang)
     converted_oudio = gtts.gTTS(translated.text, lang=output_lang)
