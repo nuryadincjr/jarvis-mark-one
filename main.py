@@ -13,13 +13,14 @@ import playsound
 from word2number import w2n
 from email.message import EmailMessage
 
+
 listener = sr.Recognizer()
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
 default_input_lang = 'id'
 default_output_lang = 'en'
-
+engine_name = 'jarvis'
 
 def talk(text):
     engine.say(text)
@@ -33,8 +34,8 @@ def take_command():
             voice = listener.listen(source)
             command = listener.recognize_google(voice, language=default_input_lang)
             command = command.lower()
-            if 'jarvis' in command:
-                command = command.replace('jarvis', '')
+            if engine_name in command:
+                command = command.replace(engine_name, '')
 
     except:
         pass
@@ -65,7 +66,7 @@ def run_engine():
     elif 'I love you' in command:
         talk('I love you to')
     elif 'your name' in command:
-        talk('my name is john')
+        talk('my name is '+str(engine_name))
     elif 'jook' in command:
         print(pyjokes.get_joke())
         talk(pyjokes.get_joke())
@@ -84,7 +85,7 @@ def run_engine():
 
 
 def pdf_reader():
-    book = open('read.pdf', 'rb')
+    book = open('e-book/read.pdf', 'rb')
     pdfReader = PyPDF4.PdfFileReader(book)
     page = pdfReader.numPages
     print('All page is ' +str(page))
