@@ -19,10 +19,13 @@ engine = pyttsx3.init()
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
 default_input_lang = 'id'
-default_output_lang = 'en'
+default_output_lang = 'id'
 engine_name = 'jarvis'
 
 def talk(text):
+    # converted_oudio = gtts.gTTS(translated, lang='id')
+    # converted_oudio.save('translate.mp3')
+    # playsound.playsound('translate.mp3')
     engine.say(text)
     engine.runAndWait()
 
@@ -58,25 +61,27 @@ def run_engine():
         song = command.replace('play', '')
         talk('playing ' + song)
         pywhatkit.playonyt(song)
-    elif 'what is' in command:
-        person = command.replace('what is', "")
+    elif 'find' in command:
+        person = command.replace('find', "")
         info = wikipedia.summary(person, 1)
-        print(info)
-        talk(info)
+        translator(info)
+        # print(info)
+        # talk(info)
     elif 'I love you' in command:
         talk('I love you to')
     elif 'your name' in command:
         talk('my name is '+str(engine_name))
     elif 'jook' in command:
-        print(pyjokes.get_joke())
-        talk(pyjokes.get_joke())
+        translator(pyjokes.get_joke())
+        # print(pyjokes.get_joke())
+        # talk(pyjokes.get_joke())
     elif 'write' in command:
         message = command.replace('write', '')
         pyautogui.typewrite(message)
         pyautogui.press('enter')
     elif 'send email' in command:
         email_info()
-    elif 'book' in command:
+    elif 'go' in command:
         pdf_reader()
     elif 'translate' in command:
         translate()
@@ -85,22 +90,24 @@ def run_engine():
 
 
 def pdf_reader():
-    book = open('e-book/read.pdf', 'rb')
+    book = open('e-book/read2.pdf', 'rb')
     pdfReader = PyPDF4.PdfFileReader(book)
     page = pdfReader.numPages
     print('All page is ' +str(page))
-
     talk('What page will you start from?')
     page_start = w2n.word_to_num(take_command())
     print('Start page is '+str(page_start))
     talk('Until what page do you read?')
     page_end = w2n.word_to_num(take_command())
     print('End page is '+str(page_end))
+
     for num in range(page_start, page_end):
         page = pdfReader.getPage(page_start)
         text = page.extractText()
         print('Reading from pages '+str(page_start)+" of "+str(page_end))
-        talk(text)
+        translator(text)
+        # talk(text)
+
 
 
 email_list = {
@@ -155,23 +162,51 @@ all_lang = {
     }
 
 def translate():
+
     lang_list = googletrans.LANGUAGES
-    talk('into what language do I translate?')
-    # print(lang_list['en'])
-    commend = take_command()
-    output_lang = all_lang[commend]
-    input_lang = default_input_lang
-    print(lang_list[input_lang] +" to " +lang_list[output_lang])
-    talk('what can i translate?')
-    person = take_command()
-    translator = googletrans.Translator()
-    translated = translator.translate(person, dest=output_lang)
-    converted_oudio = gtts.gTTS(translated.text, lang=output_lang)
-    print(person)
-    print(translated.text)
-    converted_oudio.save('translate.mp3')
-    playsound.playsound('translate.mp3')
+
+    while True:
+        talk('into what language do I translate?')
+        # print(lang_list['en'])
+        commend = take_command()
+        if commend in all_lang:
+            output_lang = all_lang[commend]
+            break
+        elif commend in 'censel':
+            talk('you cancel this process')
+            break
+
+    try:
+        input_lang = default_input_lang
+        print(lang_list[input_lang] + " to " + lang_list[output_lang])
+        talk('what can i translate?')
+        person = take_command()
+        translator = googletrans.Translator()
+        translated = translator.translate(person, dest=output_lang)
+        converted_oudio = gtts.gTTS(translated.text, lang=output_lang)
+        print(person)
+        print(translated.text)
+        converted_oudio.save('translate.mp3')
+        playsound.playsound('translate.mp3')
+
+    except:
+        pass
+
+def translator(voice_input):
+    try:
+        translator = googletrans.Translator()
+        translated = translator.translate(voice_input, dest=default_output_lang)
+        converted_oudio = gtts.gTTS(translated.text, lang=default_output_lang)
+        print(translated.text)
+        converted_oudio.save('translate.mp3')
+        playsound.playsound('translate.mp3')
+    except:
+        pass
 
 
 while True:
+    commend = take_command()
     run_engine()
+    if 'shut down' in commend:
+        talk('turn off the program')
+        break
